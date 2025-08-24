@@ -1,0 +1,35 @@
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.25rem;
+  
+    .label {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #222;
+    }
+  
+    .input {
+      padding: 0.6rem 0.75rem;
+      font-size: 1rem;
+      border: 1.5px solid #ccc;
+      border-radius: 6px;
+      transition: border-color 0.3s;
+  
+      &:focus {
+        border-color: #0070f3;
+        outline: none;
+        box-shadow: 0 0 5px #0070f3;
+      }
+    }
+  
+    .inputError {
+      border-color: #d93025;
+    }
+  
+    .error {
+      color: #d93025;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+  }
