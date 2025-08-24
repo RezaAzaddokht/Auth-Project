@@ -2,9 +2,10 @@
     max-width: 400px;
     margin: 6rem auto;
     padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 0 28px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    background-color: #0f0f23;
+    border: 1px solid #2a2a3a;
   
     .form {
       display: flex;
@@ -15,6 +16,7 @@
       text-align: center;
       margin-bottom: 2rem;
       font-size: 2rem;
-      color: #0070f3;
+      color: #ffffff;
+      font-weight: 600;
     }
   }
