@@ -8,6 +8,7 @@ export function useAuth() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -32,10 +33,15 @@ export function useAuth() {
   }
 
   function logout() {
-    localStorage.removeItem(STORAGE_KEY);
-    setUser(null);
-    router.push("/auth");
+    setIsLoggingOut(true);
+    router.replace("/auth");
+    // Clear data after navigation starts
+    setTimeout(() => {
+      localStorage.removeItem(STORAGE_KEY);
+      setUser(null);
+      setIsLoggingOut(false);
+    }, 100);
   }
 
-  return { user, login, logout, loading };
+  return { user, login, logout, loading, isLoggingOut };
 }
