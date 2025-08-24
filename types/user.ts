@@ -10,4 +10,14 @@ export interface User {
       medium: string;
       thumbnail: string;
     };
+    location: {
+      country: string;
+      city: string;
+    };
+    login: {
+      username: string;
+    };
+    registered: {
+      age: number;
+    };
   }
