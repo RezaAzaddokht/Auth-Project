@@ -9,14 +9,14 @@ interface AuthGuardProps {
 }
 
 export default function AuthGuard({ children }: AuthGuardProps) {
-  const { user, loading } = useAuth();
+  const { user, loading, isLoggingOut } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && !user && !isLoggingOut) {
       router.push("/auth");
     }
-  }, [user, loading, router]);
+  }, [user, loading, isLoggingOut, router]);
 
   if (loading) {
     return (
@@ -31,7 +31,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
     );
   }
 
-  if (!user) {
+  if (!user || isLoggingOut) {
     return null;
   }
 

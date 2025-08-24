@@ -12,14 +12,15 @@ export default function Sidebar() {
     {
       label: "Dashboard",
       href: "/dashboard",
-      icon: "📊"
+      icon: "⚡"
     }
   ];
 
   return (
     <aside className={styles.sidebar}>
       <div className={styles.logo}>
-        <h2>Auth Project</h2>
+        <div className={styles.logoIcon}>🔐</div>
+        <h2>Auth</h2>
       </div>
       
       <nav className={styles.navigation}>
@@ -37,6 +38,10 @@ export default function Sidebar() {
           ))}
         </ul>
       </nav>
+      
+      <div className={styles.footer}>
+        <div className={styles.footerText}>v1.0.0</div>
+      </div>
     </aside>
   );
 }
