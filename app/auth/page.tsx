@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Input from "@/components/Input/Input";
 import Button from "@/components/Button/Button";
 import styles from "./auth.module.scss";
@@ -11,46 +12,47 @@ import { useAuth } from "@/hooks/useAuth";
 type AuthFormType = z.infer<typeof authFormSchema>;
 
 export default function AuthPage() {
-  const { login } = useAuth();
+  const { login, user, loading } = useAuth();
+  const router = useRouter();
   const phoneInputRef = useRef<HTMLInputElement>(null);
   const [errors, setErrors] = useState<Partial<AuthFormType>>({});
-  const [loading, setLoading] = useState(false);
+  const [formLoading, setFormLoading] = useState(false);
+
+  // Redirect to dashboard if already logged in
+  useEffect(() => {
+    if (!loading && user) {
+      router.push("/dashboard");
+    }
+  }, [user, loading, router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const phone = phoneInputRef.current?.value || "";
-
-    // Validate with Zod
-    const result = authFormSchema.safeParse({ phoneNumber: phone });
-
-    if (!result.success) {
-      const fieldErrors: Partial<AuthFormType> = {};
-      result.error.errors.forEach((err) => {
-        if (err.path[0] === "phoneNumber") {
-          fieldErrors.phoneNumber = err.message;
-        }
-      });
-      setErrors(fieldErrors);
+  
+    // Validate phone number only
+    const validation = authFormSchema.safeParse({ phoneNumber: phone });
+    if (!validation.success) {
+      const errorMessage = validation.error.issues[0]?.message || "Invalid phone number";
+      setErrors({ phoneNumber: errorMessage });
       return;
     }
     setErrors({});
-
-    setLoading(true);
+  
+    setFormLoading(true);
     try {
-      const res = await fetch("https://randomuser.me/api/?results=1&nat=us");
-      const json = await res.json();
-      const userData = json.results[0];
-
-      if (!userData) {
-        setErrors({ phoneNumber: "Failed to fetch user data, please try again." });
-        return;
+      const response = await fetch("https://randomuser.me/api/?results=1&nat=us");
+      const data = await response.json();
+  
+      if (data.results && data.results.length > 0) {
+        const userData = data.results[0];
+        login(userData); // Using the full user object from API
+      } else {
+        setErrors({ phoneNumber: "Failed to fetch user data" });
       }
-
-      login(userData);
     } catch {
-      setErrors({ phoneNumber: "Network error, please check your connection." });
+      setErrors({ phoneNumber: "Network error occurred" });
     } finally {
-      setLoading(false);
+      setFormLoading(false);
     }
   }
 
@@ -70,8 +72,8 @@ export default function AuthPage() {
           error={errors.phoneNumber}
         />
 
-        <Button type="submit" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
+        <Button type="submit" disabled={formLoading}>
+          {formLoading ? "Logging in..." : "Login"}
         </Button>
       </form>
     </div>

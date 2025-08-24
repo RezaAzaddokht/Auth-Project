@@ -7,11 +7,22 @@ const STORAGE_KEY = "auth_user";
 export function useAuth() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) setUser(JSON.parse(saved));
+    if (saved) {
+      try {
+        const userData = JSON.parse(saved);
+        setUser(userData);
+      } catch (error) {
+        console.error("Failed to parse user data:", error);
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    }
+    setLoading(false);
   }, []);
 
   function login(userData: User) {
@@ -26,5 +37,5 @@ export function useAuth() {
     router.push("/auth");
   }
 
-  return { user, login, logout };
+  return { user, login, logout, loading };
 }
